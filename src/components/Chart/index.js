@@ -1,17 +1,22 @@
 import React from 'react';
-import { Box } from '@mui/material';
-import ChartLoading from './ChartLoading';
+import { Box, Collapse } from '@mui/material';
+// import ChartLoading from './ChartLoading';
+import ChartData from './ChartData';
 
-export const ChartContainer = () => {
+export const ChartContainer = ({ openChart }) => {
 	return (
-		<Box
-			sx={{
-				// border: '1px solid blue',
-				// width: '773px',
-				// minHeight: '150px',
-			}}
-		>
-			<ChartLoading />
-		</Box>
+		<Collapse in={openChart}>
+			<Box
+				sx={{
+					// border: '1px solid blue',
+					// width: '773px',
+					// minHeight: '150px',
+					margin: '10px 0',
+				}}
+			>
+				{/* <ChartLoading /> */}
+				<ChartData />
+			</Box>
+		</Collapse>
 	)
 }
