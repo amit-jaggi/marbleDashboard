@@ -6,7 +6,7 @@ import { DataContext } from './data/MainContext';
 
 const App = () => {
   const title = document.querySelector('title');
-  title.innerText = `Dashboard | Go Marble`;
+  title.innerText = `Go Marble Dashboard`;
 
   return (
     <DataContext>
