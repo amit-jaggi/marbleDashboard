@@ -74,7 +74,7 @@ const SelectDateDialog = ({ open, handleClose }) => {
 						fontSize: '20px',
 						cursor: 'default',
 					}}
-				>Select Dates</Typography>
+				>Compare Periods</Typography>
 				<Tooltip title='Close' sx={{ fontFamily: 'Inter', fontWeight: 500 }}>
 					<IconButton
 						children={<HighlightOff sx={{ fontSize: '20px' }} />}
@@ -114,11 +114,11 @@ const SelectDateDialog = ({ open, handleClose }) => {
 								fontSize: '18px',
 								cursor: 'default',
 							}}
-						>Start Date</Typography>
+						>From</Typography>
 						<Select
 							displayEmpty
 							sx={{
-								width: 200,
+								width: 210,
 								height: 50,
 								fontFamily: 'Inter',
 								fontWeight: 500,
@@ -137,7 +137,7 @@ const SelectDateDialog = ({ open, handleClose }) => {
 								fontFamily: 'Inter',
 								fontWeight: 500,
 							}} disabled>
-								<em>Select</em>
+								<em>Select Date</em>
 							</MenuItem>
 							{
 								labels.map((el, index) => <MenuItem
@@ -168,7 +168,7 @@ const SelectDateDialog = ({ open, handleClose }) => {
 									fontSize: '18px',
 									cursor: 'default',
 								}}
-							>End Date</Typography>
+							>To</Typography>
 							<FormControl error={![endDate].includes('') && startDate === endDate
 								? true
 								: startDate > endDate
@@ -178,7 +178,7 @@ const SelectDateDialog = ({ open, handleClose }) => {
 								<Select
 									displayEmpty
 									sx={{
-										width: 200,
+										width: 210,
 										height: 50,
 										fontFamily: 'Inter',
 										fontWeight: 500,
@@ -197,7 +197,7 @@ const SelectDateDialog = ({ open, handleClose }) => {
 										fontFamily: 'Inter',
 										fontWeight: 500,
 									}} disabled>
-										<em>Select</em>
+										<em>Select Date</em>
 									</MenuItem>
 									{
 										labels.map((el, index) => <MenuItem

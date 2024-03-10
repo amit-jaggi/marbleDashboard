@@ -24,7 +24,7 @@ const DateData = ({ handleClose }) => {
 				isLoading
 					? ''
 					: (<>
-						<Tooltip title='Date Picker'>
+						<Tooltip title='Date Range Picker'>
 							<IconButton
 								children={<DateRangeRounded
 									sx={{
