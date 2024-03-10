@@ -1,4 +1,6 @@
 import React, { useState, useContext } from 'react';
+import { setIndex, setStartDate, setEndDate } from '../../state/actions';
+import { useSelector, useDispatch } from 'react-redux';
 import {
 	Box,
 	Typography,
@@ -11,12 +13,14 @@ import {
 	TrendingUpRounded,
 	TrendingDownRounded,
 } from '@mui/icons-material';
-import { useHover, interchangeMetrics } from '../../utils/function-definitions';
+import { useHover, interchangeMetrics, metricTrendPercent } from '../../utils/function-definitions';
 import { MetricsMenu } from './MetricsMenu';
 import { MainContext } from '../../data/MainContext';
 
-const MetricsData = ({ el, index, activeMetric, handleActiveMetric }) => {
-	const { title, value, trend, percent } = el;
+const MetricsData = ({ el, index }) => {
+	const { title, type, percent, dataset } = el;
+	const activeMetric_index = useSelector(state => state.indexReducer.index);
+	const dispatch = useDispatch();
 
 	const [hoverRef, isHovered] = useHover();
 	const [metrics, setMetrics] = useContext(MainContext);
@@ -29,10 +33,10 @@ const MetricsData = ({ el, index, activeMetric, handleActiveMetric }) => {
 		setAnchorEl(event.currentTarget);
 	};
 	const handleMenuItemClick = (event, menuID) => {
-		const METRIC_ID = activeMetrics[activeMetric].id;
+		const METRIC_ID = activeMetrics[activeMetric_index].id;
 		const updatedActiveMetrics = interchangeMetrics(activeMetrics, inactiveMetrics, METRIC_ID, menuID);
 		const updatedInctiveMetrics = interchangeMetrics(inactiveMetrics, activeMetrics, menuID, METRIC_ID);
-		
+
 		setMetrics(prev => ({
 			...prev,
 			activeMetrics: updatedActiveMetrics,
@@ -51,7 +55,7 @@ const MetricsData = ({ el, index, activeMetric, handleActiveMetric }) => {
 				width: '183px',
 				height: '60px',
 				borderRadius: '10px',
-				backgroundColor: index === activeMetric ? '#F1F1F1' : '#FFFFFF',
+				backgroundColor: index === activeMetric_index ? '#F1F1F1' : '#FFFFFF',
 				padding: '5px 10px',
 				display: 'flex',
 				flexDirection: 'column',
@@ -62,7 +66,11 @@ const MetricsData = ({ el, index, activeMetric, handleActiveMetric }) => {
 				},
 			}}
 			ref={hoverRef}
-			onClick={() => handleActiveMetric(index)}
+			onClick={() => {
+				dispatch(setIndex(index));
+				dispatch(setStartDate(0));
+				dispatch(setEndDate(7));
+			}}
 		>
 			<Box
 				sx={{
@@ -75,12 +83,11 @@ const MetricsData = ({ el, index, activeMetric, handleActiveMetric }) => {
 			>
 				<MetricHeader title={title} />
 				{
-					index === activeMetric
+					index === activeMetric_index
 						? (
 							<>
 								<Box
 									sx={{
-										// border: '0.5px solid blue',
 										width: '23px',
 										height: '23px',
 										display: 'flex',
@@ -114,12 +121,11 @@ const MetricsData = ({ el, index, activeMetric, handleActiveMetric }) => {
 								/>
 							</>
 						)
-						: !(index === activeMetric) && isHovered
+						: !(index === activeMetric_index) && isHovered
 							? (
 								<>
 									<Box
 										sx={{
-											// border: '0.5px solid blue',
 											width: '23px',
 											height: '23px',
 											display: 'flex',
@@ -159,17 +165,15 @@ const MetricsData = ({ el, index, activeMetric, handleActiveMetric }) => {
 
 			<Box
 				sx={{
-					// border: '1px solid black',
 					width: '163px',
 					height: '22px',
 					display: 'flex',
 					alignItems: 'center',
 				}}
 			>
-				<MetricValue value={value} />
+				<MetricValue type={type} currentYearCycle={dataset.currentYearCycle} />
 				<Box
 					sx={{
-						// border: '0.5px solid red',
 						width: '29px',
 						height: '15px',
 						display: 'flex',
@@ -177,8 +181,8 @@ const MetricsData = ({ el, index, activeMetric, handleActiveMetric }) => {
 						marginLeft: '-2px',
 					}}
 				>
-					<MetricTrend trend={trend} />
-					<MetricPercent percent={percent} />
+					<MetricTrend dataset={dataset} />
+					<MetricPercent percent={percent} dataset={dataset} />
 				</Box>
 			</Box>
 		</Box>
@@ -239,23 +243,27 @@ const MetricHeader = ({ title }) => {
 	)
 }
 
-const MetricValue = ({ value }) => {
+const MetricValue = ({ type, currentYearCycle }) => {
 	return (<Typography
 		sx={{
-			// border: '0.5px solid red',
 			fontFamily: 'Inter',
 			fontWeight: 600,
 			fontSize: '15px',
 			marginRight: '5px',
 			cursor: 'default',
 		}}
-	>{value}</Typography>)
+	>
+		{type === 'amount' ? '$' : ''}
+		{currentYearCycle[currentYearCycle.length - 1].toLocaleString()}
+		{type === 'percent' ? '%' : ''}
+	</Typography>)
 }
 
-const MetricTrend = ({ trend }) => {
-	return (<>
-		{
-			trend
+const MetricTrend = ({ dataset }) => {
+	const { currentYearCycle: current, previousYearCycle: previous } = dataset;
+	
+	return (<>{
+			current[current.length - 1] > previous[previous.length - 1]
 				? (
 					<TrendingUpRounded
 						sx={{
@@ -277,7 +285,9 @@ const MetricTrend = ({ trend }) => {
 		}</>)
 }
 
-const MetricPercent = ({ percent }) => {
+const MetricPercent = ({ dataset }) => {
+	const { currentYearCycle: current, previousYearCycle: previous } = dataset;
+
 	return (
 		<Typography
 			sx={{
@@ -287,7 +297,9 @@ const MetricPercent = ({ percent }) => {
 				color: '#616161',
 				cursor: 'default',
 			}}
-		>{percent}%</Typography>
+		>
+			{Math.round(metricTrendPercent(current[current.length - 1], previous[previous.length - 1]))}%
+		</Typography>
 	)
 }
 

@@ -1,21 +1,19 @@
-import React, { useState, useContext } from 'react';
+import React, { useContext } from 'react';
 import { Box } from '@mui/material';
 import {
 	ExpandMoreRounded,
 	ExpandLessRounded,
 } from '@mui/icons-material';
-// import MetricsLoading from './MetricsLoading';
+import MetricsLoading from './MetricsLoading';
 import MetricsData from './MetricsData';
 import { MainContext } from '../../data/MainContext';
+import { useSelector } from 'react-redux';
 
 
 export const MetricsContainer = ({ openChart, handleChart }) => {
+	const isLoading = useSelector(state => state.appLoadRedcuers.load);
 	const [metrics] = useContext(MainContext);
 
-	const [activeMetric, setActiveMetric] = useState(0);
-
-	const handleActiveMetric = index => setActiveMetric(index);
-	
 	return (
 		<Box
 			sx={{
@@ -25,17 +23,20 @@ export const MetricsContainer = ({ openChart, handleChart }) => {
 				alignItems: 'center',
 			}}
 		>
-			{/* <MetricsLoading /> */}
 			{
-				metrics.activeMetrics !== 0 && metrics.activeMetrics.map(
-					(el, index) => <MetricsData
-						key={index}
-						el={el}
-						index={index}
-						activeMetric={activeMetric}
-						handleActiveMetric={handleActiveMetric}
-					/>
-				)
+				isLoading
+					? [...Array(4).keys()].map((line, index) => <MetricsLoading key={index} />)
+					: (<>
+						{
+							metrics.activeMetrics !== 0 && metrics.activeMetrics.map(
+								(el, index) => <MetricsData
+									key={index}
+									el={el}
+									index={index}
+								/>
+							)
+						}
+					</>)
 			}
 			<ToggleChart
 				openChart={openChart}
@@ -45,7 +46,7 @@ export const MetricsContainer = ({ openChart, handleChart }) => {
 	)
 }
 
-const ToggleChart = ({ openChart, handleChart  }) => {
+const ToggleChart = ({ openChart, handleChart }) => {
 	return (
 		<Box
 			sx={{

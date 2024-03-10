@@ -1,4 +1,6 @@
 import './App.css';
+import { Provider } from 'react-redux';
+import store from './state/store';
 import MarbleDashbord from './pages/MarbleDashbord';
 import { DataContext } from './data/MainContext';
 
@@ -8,9 +10,11 @@ const App = () => {
 
   return (
     <DataContext>
-      <div className="App">
-        <MarbleDashbord />
-      </div>
+      <Provider store={store}>
+        <div className="App">
+          <MarbleDashbord />
+        </div>
+      </Provider>
     </DataContext>
   );
 }

@@ -15,7 +15,6 @@ export const MetricsMenu = ({
 	options,
 	handleMenuItemClick
 }) => {
-	// console.log('options >', options)
 	return (
 		<Menu
 			id="metrics-menu"
@@ -42,7 +41,6 @@ export const MetricsMenu = ({
 					>
 						<Box
 							sx={{
-								// border: '1px solid red',
 								width: '202px',
 								height: '22px',
 								display: 'flex',

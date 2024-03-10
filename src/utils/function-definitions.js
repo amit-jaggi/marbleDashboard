@@ -17,7 +17,7 @@ export function useHover() {
             refCopy.current.removeEventListener("mouseleave", leave);
         };
     }, []);
-    
+
     return [ref, isHovered];
 }
 
@@ -33,3 +33,34 @@ export const interchangeMetrics = (array1, array2, id1, id2) => {
         }
     });
 }
+
+export const metricTrendPercent = (current, previous) => {
+    let percent;
+    if (current > previous) {
+        percent = ((current - previous) / current) * 100;
+    } else {
+        percent = ((previous - current) / current) * 100;
+    }
+    return percent;
+}
+
+export const formatDay = (date, formatType) => {
+    if (formatType === 'start') {
+        return insert(date.split(' '), 1, '1,').join(' ');
+    } else {
+        const month = date.split(' ')[0]
+        if(['Aug', 'Oct', 'Dec'].includes(month)) {
+            return insert(date.split(' '), 1, '31,').join(' ')
+        } else if(['Apr', 'Jun'].includes(month)) {
+            return insert(date.split(' '), 1, '30,').join(' ')
+        } else {
+            return insert(date.split(' '), 1, '28,').join(' ')
+        }
+    }
+}
+
+const insert = (arr, index, newItem) => [
+    ...arr.slice(0, index),
+    newItem,
+    ...arr.slice(index)
+]
